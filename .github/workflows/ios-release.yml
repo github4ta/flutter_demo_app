@@ -2,7 +2,7 @@ name: Flutter iOS Build
 
 on:
   push:
-    branches: [ main ] # Укажите вашу основную ветку (main или master)
+    branches: [ master ] # Укажите вашу основную ветку (main или master)
 
 jobs:
   build:
