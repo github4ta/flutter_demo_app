@@ -1,0 +1,40 @@
+name: Flutter iOS Build
+
+on:
+  push:
+    branches: [ main ] # Укажите вашу основную ветку (main или master)
+
+jobs:
+  build:
+    # Важно: iOS можно собрать только на macOS
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          cache: true # Ускоряет повторные сборки
+
+      - name: Install Dependencies
+        run: flutter pub get
+
+      - name: Install CocoaPods
+        # Переходим в папку ios и устанавливаем нативные зависимости
+        run: |
+          cd ios
+          pod install
+
+      - name: Build iOS (.app)
+        # Сборка без подписи кода (идеально для тестов)
+        run: flutter build ios --release --no-codesign
+
+      - name: Archive Production Artifact
+        # Сохраняем собранное приложение в "Артефакты" GitHub, чтобы его можно было скачать
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-build
+          path: build/ios/iphoneos/Runner.app
