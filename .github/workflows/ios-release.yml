@@ -32,6 +32,9 @@ jobs:
             echo "No Podfile found, skipping pod install (this is normal for simple apps)"
           fi
 
+      - name: Force Generate Configs
+        run: flutter build ios --config-only --release --no-codesign
+
       - name: Build iOS (.app)
         run: flutter build ios --release --no-codesign
 
