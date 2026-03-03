@@ -17,21 +17,19 @@ jobs:
         with:
           channel: 'stable'
 
-      - name: Regenerate iOS files
-        run: |
-          rm -rf ios/Podfile
-          flutter create . --platforms=ios
-
       - name: Install Dependencies
         run: flutter pub get
 
+      - name: Force Generate iOS Files
+        run: flutter build ios --config-only --no-codesign
+
       - name: Install CocoaPods
         run: |
-          cd ios
-          if [ -f "Podfile" ]; then
+          if [ -f "ios/Podfile" ]; then
+            cd ios
             pod install
           else
-            echo "Podfile not found even after create" && exit 1
+            echo "No Podfile found, skipping pod install (this is normal for simple apps)"
           fi
 
       - name: Build iOS (.app)
