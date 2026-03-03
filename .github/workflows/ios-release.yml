@@ -35,6 +35,11 @@ jobs:
       - name: Force Generate Configs
         run: flutter build ios --config-only --release --no-codesign
 
+      - name: Force Regenerate iOS Files
+        run: |
+          rm -rf ios
+          flutter create . --platforms=ios
+
       - name: Build iOS (.app)
         run: flutter build ios --simulator --no-codesign
 
