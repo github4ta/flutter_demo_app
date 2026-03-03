@@ -2,11 +2,10 @@ name: Flutter iOS Build
 
 on:
   push:
-    branches: [ master ] # Укажите вашу основную ветку (main или master)
+    branches: [ master ]
 
 jobs:
   build:
-    # Важно: iOS можно собрать только на macOS
     runs-on: macos-latest
 
     steps:
@@ -27,17 +26,18 @@ jobs:
         run: flutter pub get
 
       - name: Install CocoaPods
-        # Переходим в папку ios и устанавливаем нативные зависимости
         run: |
           cd ios
-          pod install
+          if [ -f "Podfile" ]; then
+            pod install
+          else
+            echo "Podfile not found even after create" && exit 1
+          fi
 
       - name: Build iOS (.app)
-        # Сборка без подписи кода (идеально для тестов)
         run: flutter build ios --release --no-codesign
 
       - name: Archive Production Artifact
-        # Сохраняем собранное приложение в "Артефакты" GitHub, чтобы его можно было скачать
         uses: actions/upload-artifact@v4
         with:
           name: ios-build
